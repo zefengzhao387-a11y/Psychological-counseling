@@ -1,0 +1,171 @@
+.app-layout {
+  min-height: 100vh;
+  background: #0a0a0a;
+}
+
+.app-layout-inner {
+  background: transparent !important;
+}
+
+/* 侧栏 */
+.app-sider.ant-layout-sider {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-sider .ant-layout-sider-children {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  margin: 16px 12px 8px;
+  padding: 12px 8px;
+  text-align: center;
+}
+
+.app-brand-name {
+  font-family: Georgia, 'Times New Roman', 'Noto Serif SC', 'Songti SC', serif;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.94);
+  line-height: 1.2;
+}
+
+.app-brand-name--collapsed {
+  font-size: 16px;
+  letter-spacing: 0.08em;
+}
+
+.app-brand-en {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgba(255, 255, 255, 0.38);
+  text-transform: uppercase;
+}
+
+.app-menu.ant-menu {
+  flex: 1;
+  padding: 8px 10px;
+  border-inline-end: none !important;
+  background: transparent !important;
+}
+
+.app-menu .ant-menu-item {
+  margin: 4px 0;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.app-menu .ant-menu-item-selected {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 500;
+}
+
+.app-menu .ant-menu-item:hover {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* 顶栏 */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px !important;
+  height: 56px !important;
+  line-height: 56px !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.app-header-toggle {
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
+.app-header-toggle:hover {
+  color: rgba(255, 255, 255, 0.9) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.app-header-greeting {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.38);
+  letter-spacing: 0.04em;
+}
+
+.app-header-greeting strong {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 500;
+}
+
+.app-header-user {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-size: 13px;
+}
+
+.app-header-user:hover {
+  color: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* 内容区 */
+.app-content {
+  margin: 16px;
+  padding: 28px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  min-height: calc(100vh - 88px);
+}
+
+/* 通用页面元素微调 */
+.app-content .ant-table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.app-content .ant-btn-primary {
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+}
+
+.app-content .ant-btn-default {
+  border-radius: 999px;
+}
+
+.app-forbidden {
+  padding: 80px 24px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.app-forbidden h2 {
+  margin-bottom: 8px;
+  font-family: Georgia, 'Times New Roman', 'Noto Serif SC', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.app-forbidden p {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.38);
+}

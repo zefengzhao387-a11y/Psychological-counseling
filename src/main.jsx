@@ -4,11 +4,13 @@ import { BrowserRouter } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 import zhCN from 'antd/locale/zh_CN'
 import App from './App'
+import { appTheme } from './styles/app-theme'
 import './styles/global.css'
+import './styles/app-overrides.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN} theme={appTheme}>
       <BrowserRouter>
         <App />
       </BrowserRouter>

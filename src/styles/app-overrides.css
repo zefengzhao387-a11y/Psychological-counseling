@@ -1,0 +1,40 @@
+body {
+  background: #0a0a0a;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* 弹窗、下拉层与登录页风格统一 */
+.ant-modal-content {
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45) !important;
+}
+
+.ant-dropdown .ant-dropdown-menu {
+  background: rgba(20, 20, 24, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.ant-select-dropdown {
+  background: rgba(20, 20, 24, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ant-picker-dropdown .ant-picker-panel-container {
+  background: rgba(20, 20, 24, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ant-message-notice-content {
+  background: rgba(20, 20, 24, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Tag 在深色背景下更柔和 */
+.ant-tag {
+  border-color: rgba(255, 255, 255, 0.12);
+}

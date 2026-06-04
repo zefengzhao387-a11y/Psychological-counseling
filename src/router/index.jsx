@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom'
 import MainLayout from '../layouts/MainLayout'
-import Login from '../pages/Login'
+import Landing from '../pages/Landing'
 
 // 管理员
 import DutySchedule from '../pages/admin/DutySchedule'
@@ -42,16 +42,18 @@ function AuthGuard({ children }) {
 function RoleGuard({ roles, children }) {
   const roleCode = Number(localStorage.getItem('roleCode'))
   if (!roles.includes(roleCode)) {
-    return <div style={{ padding: 48, textAlign: 'center' }}>
-      <h2>403 — 无权访问此页面</h2>
-      <p>当前角色没有该模块权限</p>
-    </div>
+    return (
+      <div className="app-forbidden">
+        <h2>暂无访问权限</h2>
+        <p>当前角色无法打开此页面，请从侧栏选择你有权限的功能。</p>
+      </div>
+    )
   }
   return children
 }
 
 const routes = [
-  { path: '/login', element: <Login /> },
+  { path: '/login', element: <Landing /> },
 
   // 所有已登录用户共用 MainLayout，路由守卫 + 角色守卫在内部
   {
