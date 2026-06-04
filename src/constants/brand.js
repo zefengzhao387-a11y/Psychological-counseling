@@ -3,6 +3,12 @@ export const BRAND = {
   nameEn: 'HeartListen',
   tagline: '你的心理关怀陪伴',
   taglineEn: 'Your campus wellness companion.',
+  taglineTexts: [
+    '你的心理关怀陪伴',
+    '让每一颗心，都被认真倾听',
+    '温暖、保密的心理预约与咨询',
+    '高校师生的心理温暖驿站',
+  ],
   label: 'WELLNESS · CAMPUS',
   org: '心理健康中心',
   orgEn: 'Wellness Center',
