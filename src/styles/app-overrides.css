@@ -38,3 +38,27 @@ body {
 .ant-tag {
   border-color: rgba(255, 255, 255, 0.12);
 }
+
+/* 页面动效辅助样式 */
+.page-intro {
+  margin: 0 0 20px;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.52);
+  letter-spacing: 0.04em;
+}
+
+.stat-card {
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+}
+
+.stat-card__value {
+  font-size: 28px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.92);
+}

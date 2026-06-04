@@ -1,7 +1,16 @@
 import { useState } from 'react'
 import { Card, Row, Col, Button, Table, Form, Select, Input, message, Statistic } from 'antd'
 import { DownloadOutlined, SearchOutlined, FileExcelOutlined } from '@ant-design/icons'
+import CountUp from '../../components/CountUp'
+import BlurText from '../../components/BlurText'
 import request from '../../api/request'
+
+const statCards = [
+  { title: '总预约数', value: 0, delay: 0 },
+  { title: '咨询中', value: 0, delay: 0.08 },
+  { title: '已结案', value: 0, delay: 0.16 },
+  { title: '咨询师数', value: 0, delay: 0.24 },
+]
 
 export default function Statistics() {
   const [queryResult, setQueryResult] = useState([])
@@ -39,11 +48,23 @@ export default function Statistics() {
 
   return (
     <div>
+      <p className="page-intro">
+        <BlurText text="数据概览与汇总查询" animateBy="words" delay={80} />
+      </p>
       <Row gutter={[16, 16]}>
-        <Col span={6}><Card><Statistic title="总预约数" value={0} /></Card></Col>
-        <Col span={6}><Card><Statistic title="咨询中" value={0} /></Card></Col>
-        <Col span={6}><Card><Statistic title="已结案" value={0} /></Card></Col>
-        <Col span={6}><Card><Statistic title="咨询师数" value={0} /></Card></Col>
+        {statCards.map((item) => (
+          <Col span={6} key={item.title}>
+            <Card className="stat-card">
+              <Statistic
+                title={item.title}
+                value={item.value}
+                formatter={() => (
+                  <CountUp to={item.value} duration={1.4} delay={item.delay} className="stat-card__value" />
+                )}
+              />
+            </Card>
+          </Col>
+        ))}
       </Row>
 
       <Card title="汇总查询" style={{ marginTop: 16 }}>

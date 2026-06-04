@@ -20,6 +20,11 @@ import {
   MenuUnfoldOutlined,
 } from '@ant-design/icons'
 import { BRAND } from '../constants/brand'
+import BlurText from '../components/BlurText'
+import ShinyText from '../components/ShinyText'
+import SideRays from '../components/SideRays'
+import AnimatedContent from '../components/AnimatedContent'
+import AiAssistantWidget from '../components/AiAssistantWidget'
 import './MainLayout.css'
 
 const { Header, Sider, Content } = Layout
@@ -77,6 +82,24 @@ export default function MainLayout() {
 
   return (
     <Layout className="app-layout">
+      <div className="app-layout-bg" aria-hidden>
+        <div className="app-layout-bg-layer">
+          <SideRays
+            speed={2.5}
+            rayColor1="#262af7"
+            rayColor2="#96c8ff"
+            intensity={1}
+            spread={2.3}
+            origin="top-left"
+            tilt={2}
+            saturation={1.5}
+            blend={0.75}
+            falloff={1.6}
+            opacity={1}
+          />
+        </div>
+      </div>
+
       <Sider
         className="app-sider"
         trigger={null}
@@ -86,7 +109,20 @@ export default function MainLayout() {
       >
         <div className="app-brand">
           <span className={`app-brand-name${collapsed ? ' app-brand-name--collapsed' : ''}`}>
-            {BRAND.name}
+            {collapsed ? (
+              BRAND.name
+            ) : (
+              <ShinyText
+                text={BRAND.name}
+                className="app-brand-shiny"
+                speed={4}
+                color="rgba(255, 255, 255, 0.68)"
+                shineColor="rgba(255, 255, 255, 0.98)"
+                shineMid="rgba(255, 255, 255, 0.82)"
+                glowColor="rgba(255, 255, 255, 0.12)"
+                pauseOnHover
+              />
+            )}
           </span>
           {!collapsed && <span className="app-brand-en">{BRAND.nameEn}</span>}
         </div>
@@ -111,7 +147,15 @@ export default function MainLayout() {
             />
             {currentPage && (
               <span className="app-header-greeting">
-                当前 · <strong>{currentPage}</strong>
+                当前 ·{' '}
+                <BlurText
+                  key={location.pathname}
+                  text={currentPage}
+                  className="app-header-page"
+                  animateBy="chars"
+                  delay={35}
+                  duration={480}
+                />
               </span>
             )}
           </div>
@@ -135,9 +179,13 @@ export default function MainLayout() {
         </Header>
 
         <Content className="app-content">
-          <Outlet />
+          <AnimatedContent contentKey={location.pathname}>
+            <Outlet />
+          </AnimatedContent>
         </Content>
       </Layout>
+
+      <AiAssistantWidget />
     </Layout>
   )
 }

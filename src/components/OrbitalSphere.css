@@ -1,0 +1,17 @@
+.orbital-sphere {
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+
+.orbital-sphere:active {
+  cursor: grabbing;
+}
+
+.orbital-sphere canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
