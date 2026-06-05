@@ -22,12 +22,16 @@ import {
 import { BRAND } from '../constants/brand'
 import BlurText from '../components/BlurText'
 import ShinyText from '../components/ShinyText'
+import LightRays from '../components/LightRays'
 import SideRays from '../components/SideRays'
+import Particles from '../components/Particles'
 import AnimatedContent from '../components/AnimatedContent'
 import AiAssistantWidget from '../components/AiAssistantWidget'
 import './MainLayout.css'
 
 const { Header, Sider, Content } = Layout
+
+const APP_PARTICLE_COLORS = ['#ffffff']
 
 /** 各角色菜单配置 */
 const menuConfig = {
@@ -83,7 +87,24 @@ export default function MainLayout() {
   return (
     <Layout className="app-layout">
       <div className="app-layout-bg" aria-hidden>
-        <div className="app-layout-bg-layer">
+        <div className="app-layout-bg-layer app-layout-bg-layer--light">
+          <LightRays
+            raysOrigin="top-center"
+            raysColor="#ffffff"
+            raysSpeed={0.5}
+            lightSpread={0.5}
+            rayLength={1}
+            followMouse
+            mouseInfluence={0.1}
+            noiseAmount={0}
+            distortion={0}
+            className="custom-rays"
+            pulsating={false}
+            fadeDistance={1}
+            saturation={1}
+          />
+        </div>
+        <div className="app-layout-bg-layer app-layout-bg-layer--side">
           <SideRays
             speed={2.5}
             rayColor1="#262af7"
@@ -184,6 +205,21 @@ export default function MainLayout() {
           </AnimatedContent>
         </Content>
       </Layout>
+
+      <div className="app-layout-particles-overlay" aria-hidden>
+        <Particles
+          particleColors={APP_PARTICLE_COLORS}
+          particleCount={140}
+          particleSpread={10}
+          speed={0.08}
+          particleBaseSize={70}
+          moveParticlesOnHover={false}
+          alphaParticles
+          disableRotation={false}
+          pixelRatio={1}
+          className="app-layout-particles"
+        />
+      </div>
 
       <AiAssistantWidget />
     </Layout>

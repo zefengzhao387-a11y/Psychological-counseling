@@ -4,10 +4,20 @@
   pointer-events: auto;
   touch-action: none;
   cursor: grab;
+  transition: filter 0.35s ease, transform 0.35s ease;
+  filter: drop-shadow(0 0 6px rgba(110, 231, 255, 0.1));
+}
+
+.orbital-sphere--hover {
+  cursor: pointer;
+  filter: drop-shadow(0 0 12px rgba(110, 231, 255, 0.32));
+  transform: scale(1.02);
 }
 
 .orbital-sphere:active {
   cursor: grabbing;
+  transform: scale(0.98);
+  filter: drop-shadow(0 0 16px rgba(110, 231, 255, 0.45));
 }
 
 .orbital-sphere canvas {

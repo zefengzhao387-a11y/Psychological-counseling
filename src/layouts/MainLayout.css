@@ -23,6 +23,27 @@
   height: 100%;
 }
 
+.app-layout-bg-layer--light {
+  z-index: 1;
+}
+
+.app-layout-bg-layer--side {
+  z-index: 2;
+}
+
+.app-layout-particles-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.app-layout-particles {
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
 .app-layout > .ant-layout-sider,
 .app-layout > .app-layout-inner {
   position: relative;
