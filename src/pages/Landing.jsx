@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Button, message } from 'antd'
+import { message } from 'antd'
 import { HeartOutlined } from '@ant-design/icons'
 import Particles from '../components/Particles'
 import SideRays from '../components/SideRays'
 import TextType from '../components/TextType'
+import StarBorder from '../components/StarBorder'
+import CardSwap, { Card } from '../components/CardSwap'
 import LoginModal from '../components/LoginModal'
 import { BRAND, ROLE_HOME_MAP } from '../constants/brand'
 import './Landing.css'
@@ -91,9 +93,55 @@ export default function Landing() {
             />
           </p>
           <p className="landing-desc">{BRAND.desc}</p>
-          <Button className="landing-btn-login" size="large" onClick={() => setLoginOpen(true)}>
+          <StarBorder
+            as="button"
+            type="button"
+            className="landing-star-border"
+            color="white"
+            speed="5s"
+            onClick={() => setLoginOpen(true)}
+          >
             登录
-          </Button>
+          </StarBorder>
+        </div>
+
+        <div className="landing-showcase">
+          <CardSwap
+            width={340}
+            height={240}
+            cardDistance={60}
+            verticalDistance={70}
+            delay={5000}
+            pauseOnHover={false}
+          >
+            <Card>
+              <div className="landing-card-inner">
+                <p className="landing-card-tag">预约 · Appointment</p>
+                <h3 className="landing-card-title">线上初访预约</h3>
+                <p className="landing-card-desc">
+                  填写首访登记表，选择合适时段，随时查看或撤销预约进度。
+                </p>
+              </div>
+            </Card>
+            <Card>
+              <div className="landing-card-inner">
+                <p className="landing-card-tag">咨询 · Counseling</p>
+                <h3 className="landing-card-title">专业心理支持</h3>
+                <p className="landing-card-desc">
+                  初访员与咨询师协同跟进，全程保密，让倾诉更安心。
+                </p>
+              </div>
+            </Card>
+            <Card>
+              <div className="landing-card-inner">
+                <p className="landing-card-tag">AI · Assistant</p>
+                <h3 className="landing-card-title">听心智能助手</h3>
+                <p className="landing-card-desc">
+                  登录后随时唤起 AI，解答系统使用问题，提供基础心理科普。
+                </p>
+              </div>
+            </Card>
+          </CardSwap>
         </div>
       </main>
 
