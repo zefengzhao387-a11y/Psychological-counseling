@@ -209,12 +209,12 @@ export default function MainLayout() {
       <div className="app-layout-particles-overlay" aria-hidden>
         <Particles
           particleColors={APP_PARTICLE_COLORS}
-          particleCount={140}
+          particleCount={90}
           particleSpread={10}
           speed={0.08}
-          particleBaseSize={70}
+          particleBaseSize={82}
           moveParticlesOnHover={false}
-          alphaParticles
+          alphaParticles={false}
           disableRotation={false}
           pixelRatio={1}
           className="app-layout-particles"

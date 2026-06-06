@@ -34,7 +34,9 @@ request.interceptors.response.use(
       window.location.href = '/login'
       message.error('登录已过期，请重新登录')
     } else {
-      message.error(error.message || '网络错误')
+      const data = error.response?.data
+      const msg = data?.message || data?.msg || error.message || '网络错误'
+      message.error(msg)
     }
     return Promise.reject(error)
   },

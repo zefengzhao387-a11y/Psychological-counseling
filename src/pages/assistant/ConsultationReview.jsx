@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Table, Button, Modal, Form, Select, DatePicker, Input, InputNumber, message, Tag } from 'antd'
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons'
-import dayjs from 'dayjs'
+import { Table, Button, Modal, Form, DatePicker, Input, InputNumber, message, Tag } from 'antd'
+import { CheckOutlined } from '@ant-design/icons'
 import request from '../../api/request'
 
 /**
@@ -18,10 +17,9 @@ export default function ConsultationReview() {
   const fetchData = async () => {
     setLoading(true)
     try {
-      const res = await request.get('/v1/consultation/review-list')
-      setData(res.data?.records || res.data || [])
+      const res = await request.get('/v1/consultation/result/assistant-tasks')
+      setData(res.data || [])
     } catch {
-      // 接口待接入
       setData([])
     } finally { setLoading(false) }
   }
@@ -37,7 +35,6 @@ export default function ConsultationReview() {
       counselorId: values.counselorId,
       startDate: values.startDate.format('YYYY-MM-DD'),
       timeSlotId: values.timeSlotId,
-      dayOfWeek: values.startDate.day(),
       location: values.location,
       occupiedWeeks: values.occupiedWeeks || 8,
     })
@@ -45,10 +42,10 @@ export default function ConsultationReview() {
     setOpen(false); fetchData()
   }
 
-  /** 无需安排（初访结论为无需咨询） */
+  /** 标记无需安排（预留，待后端支持后启用） */
   const handleSkip = async (id) => {
-    await request.put(`/v1/consultation/skip/${id}`)
-    message.success('已标记为无需咨询')
+    await request.put(`/v1/consultation/result/${id}/mark-processed`)
+    message.success('已标记为已处理')
     fetchData()
   }
 
@@ -59,8 +56,7 @@ export default function ConsultationReview() {
   }
 
   const columns = [
-    { title: '学号', dataIndex: 'studentNo', key: 'studentNo' },
-    { title: '姓名', dataIndex: 'studentName', key: 'studentName' },
+    { title: '学生ID', dataIndex: 'studentId', key: 'studentId' },
     { title: '初访结论', dataIndex: 'conclusion', key: 'conclusion', render: conclusionTag },
     { title: '危机等级', dataIndex: 'crisisLevel', key: 'crisisLevel',
       render: (v) => {
@@ -83,7 +79,7 @@ export default function ConsultationReview() {
             <Button type="primary" size="small" icon={<CheckOutlined />}
               onClick={() => { setCurrentItem(r); setOpen(true) }}>安排咨询</Button>
           )}
-          {r.conclusion === 1 && (
+          {r.conclusion !== 2 && (
             <Button type="link" size="small" onClick={() => handleSkip(r.id)}>标记已处理</Button>
           )}
         </>
@@ -98,16 +94,16 @@ export default function ConsultationReview() {
 
       <Modal title="安排咨询" open={open} onOk={handleArrange}
         onCancel={() => { setOpen(false); setCurrentItem(null) }} width={480}>
-        <p>学生：{currentItem?.studentName}（{currentItem?.studentNo}）</p>
+        <p>学生 ID：{currentItem?.studentId}</p>
         <Form form={form} layout="vertical" style={{ marginTop: 12 }}>
           <Form.Item name="counselorId" label="咨询师ID" rules={[{ required: true }]}>
-            <Input placeholder="输入咨询师ID" />
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="咨询师用户ID" />
           </Form.Item>
           <Form.Item name="startDate" label="咨询开始日期" rules={[{ required: true }]}>
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
           <Form.Item name="timeSlotId" label="时间段ID" rules={[{ required: true }]}>
-            <Input placeholder="如：3" />
+            <InputNumber min={1} style={{ width: '100%' }} placeholder="如：3" />
           </Form.Item>
           <Form.Item name="location" label="咨询地点" rules={[{ required: true }]}>
             <Input placeholder="如：心理中心B203" />

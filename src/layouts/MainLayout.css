@@ -40,8 +40,7 @@
 
 .app-layout-particles {
   pointer-events: none;
-  opacity: 0.55;
-  mix-blend-mode: screen;
+  opacity: 1;
 }
 
 .app-layout > .ant-layout-sider,
