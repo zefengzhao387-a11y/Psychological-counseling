@@ -93,13 +93,14 @@ export default function FirstVisitForm() {
     try {
       const values = await form.validateFields()
       setSubmitting(true)
+      const scores = questions.map(q => values[q.key] || 0)
       const payload = {
         studentName: localStorage.getItem('username') || '',
         studentNo: localStorage.getItem('userNo') || '',
         gender: values.gender,
         department: values.department,
         phone: values.phone,
-        questionnaire: JSON.stringify(values),
+        questionnaire: JSON.stringify({ scores }),
         totalScore,
         isUrgent: totalScore > 60 ? 1 : 0,
       }
