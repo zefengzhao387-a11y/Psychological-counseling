@@ -39,8 +39,6 @@ const CONCLUSION_OPTIONS = [
 export default function FirstVisitManage() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
-  const [page, setPage] = useState(1)
-  const [total, setTotal] = useState(0)
   const [activeTab, setActiveTab] = useState('pending')
   const [evaluatedIds, setEvaluatedIds] = useState(new Set())
   const [evaluatedList, setEvaluatedList] = useState([])
@@ -51,30 +49,26 @@ export default function FirstVisitManage() {
   const [submitting, setSubmitting] = useState(false)
   const [form] = Form.useForm()
 
-  const visitorId = Number(localStorage.getItem('userId'))
-
-  /** 加载已审核通过的预约列表 */
+  /** 加载分配给我的已审核通过的预约 */
   const fetchApproved = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await request.get('/v1/appointment/first-visit/review-list', {
-        params: { page, size: 10, status: 2 },
-      })
-      const list = res.data?.records || []
+      const res = await request.get('/v1/appointment/first-visit/visitor')
+      const list = res.data || []
       setData(list)
-      setTotal(res.data?.total || 0)
+      setTotal(list.length)
     } catch {
       setData([])
     } finally {
       setLoading(false)
     }
-  }, [page])
+  }, [])
 
-  /** 加载已评估记录 */
+  /** 加载我的已评估记录 */
   const fetchEvaluated = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await request.get('/v1/consultation/result/pending')
+      const res = await request.get('/v1/consultation/result/my')
       const list = res.data || []
       setEvaluatedList(list)
     } catch {
@@ -209,7 +203,7 @@ export default function FirstVisitManage() {
           <Table
             rowKey="id" columns={pendingColumns} dataSource={data}
             loading={loading} scroll={{ x: 800 }}
-            pagination={{ current: page, total, pageSize: 10, onChange: setPage }}
+            pagination={{ pageSize: 10 }}
           />
         </>
       )}
