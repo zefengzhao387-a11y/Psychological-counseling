@@ -50,13 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
 }
 
 .landing-header-login {
@@ -93,6 +87,7 @@
   margin-right: clamp(48px, 8vw, 120px);
   margin-left: -32px;
   align-self: center;
+  animation: block-fade-in 0.65s cubic-bezier(0.22, 1, 0.36, 1) 0.18s both;
 }
 
 .landing-copy {
@@ -100,6 +95,7 @@
   margin-left: clamp(48px, 12vw, 180px);
   align-self: center;
   text-align: left;
+  animation: page-rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
 }
 
 .landing-label {

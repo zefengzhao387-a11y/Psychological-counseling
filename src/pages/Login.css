@@ -303,7 +303,12 @@
 .login-modal-header {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  align-items: center;
+  gap: 8px;
+}
+
+.login-modal-logo {
+  margin-bottom: 2px;
 }
 
 .login-modal-title {
@@ -339,4 +344,59 @@
   text-align: center;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.32);
+}
+
+.login-modal-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.login-modal-tab {
+  position: relative;
+  padding: 0 4px 12px;
+  border: none;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 15px;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.login-modal-tab:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.login-modal-tab--active {
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+}
+
+.login-modal-tab--active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.88);
+  animation: login-tab-indicator-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes login-tab-indicator-in {
+  from {
+    opacity: 0;
+    transform: scaleX(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+.login-modal-panel {
+  overflow: hidden;
 }

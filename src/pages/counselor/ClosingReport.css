@@ -1,0 +1,39 @@
+/* 结案报告抽屉：挂到 body，避免与页面 route 动画叠加抖动 */
+.closing-report-drawer.ant-drawer {
+  outline: none;
+}
+
+.closing-report-drawer .ant-drawer-content-wrapper {
+  will-change: transform;
+}
+
+.closing-report-drawer .ant-drawer-mask {
+  backdrop-filter: blur(2px);
+}
+
+.closing-report-drawer .ant-drawer-body {
+  overflow-x: hidden;
+  padding-top: 8px;
+}
+
+.closing-report-drawer__body {
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.closing-report-drawer__body--pending {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.closing-report-drawer__pick-section {
+  min-height: 132px;
+}
+
+.closing-report-drawer .ant-card {
+  transition: none;
+}
+
+.closing-report-drawer .ant-descriptions {
+  margin-top: 12px;
+}

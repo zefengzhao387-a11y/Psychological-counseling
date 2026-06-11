@@ -57,6 +57,7 @@
 .app-sider.ant-layout-sider {
   background: rgba(255, 255, 255, 0.02) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
+  transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1), min-width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .app-sider .ant-layout-sider-children {
@@ -73,6 +74,14 @@
   margin: 16px 12px 8px;
   padding: 12px 8px;
   text-align: center;
+}
+
+.app-brand-logo-wrap {
+  margin-bottom: 10px;
+}
+
+.app-brand-logo-wrap--collapsed {
+  margin-bottom: 8px;
 }
 
 .app-brand-name {

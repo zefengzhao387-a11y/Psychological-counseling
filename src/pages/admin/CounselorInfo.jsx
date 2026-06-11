@@ -8,7 +8,24 @@ export default function CounselorInfo() {
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
+  const [staffUsers, setStaffUsers] = useState([])
   const [form] = Form.useForm()
+
+  const fetchStaffUsers = async () => {
+    try {
+      const [visitors, counselors] = await Promise.all([
+        request.get('/v1/user/users', { params: { page: 1, size: 100, roleCode: 2 } }),
+        request.get('/v1/user/users', { params: { page: 1, size: 100, roleCode: 4 } }),
+      ])
+      const list = [
+        ...(visitors.data?.records || []),
+        ...(counselors.data?.records || []),
+      ]
+      setStaffUsers(list)
+    } catch {
+      setStaffUsers([])
+    }
+  }
 
   const fetchData = async () => {
     setLoading(true)
@@ -21,7 +38,7 @@ export default function CounselorInfo() {
     } finally { setLoading(false) }
   }
 
-  useEffect(() => { fetchData() }, [])
+  useEffect(() => { fetchData(); fetchStaffUsers() }, [])
 
   const handleSave = async () => {
     const values = await form.validateFields()
@@ -77,6 +94,15 @@ export default function CounselorInfo() {
       <Modal title={editingId ? '编辑老师' : '新增老师'} open={open} onOk={handleSave}
         onCancel={() => { setOpen(false); setEditingId(null) }} width={560}>
         <Form form={form} layout="vertical">
+          {!editingId && (
+            <Form.Item name="userId" label="关联系统用户" rules={[{ required: true, message: '请选择用户' }]}>
+              <Select showSearch optionFilterProp="label" placeholder="选择初访员/咨询师账号"
+                options={staffUsers.map((u) => ({
+                  value: u.id,
+                  label: `${u.id} - ${u.username}（${u.userNo}）`,
+                }))} />
+            </Form.Item>
+          )}
           <Form.Item name="name" label="姓名" rules={[{ required: true }]}>
             <Input />
           </Form.Item>

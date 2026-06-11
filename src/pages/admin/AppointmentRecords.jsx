@@ -5,6 +5,7 @@ import {
 import { PlusOutlined, EditOutlined, FileAddOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import request from '../../api/request'
+import AppointmentProgressCell from '../../components/AppointmentProgressCell'
 
 export default function AppointmentRecords() {
   const [data, setData] = useState([])
@@ -127,12 +128,6 @@ export default function AppointmentRecords() {
     fetchData()
   }
 
-  const statusTag = (s) => {
-    const map = { 1: '待审核', 2: '已通过', 3: '已拒绝', 4: '已撤销' }
-    const color = { 1: 'orange', 2: 'green', 3: 'red', 4: 'default' }
-    return <Tag color={color[s]}>{map[s] || s}</Tag>
-  }
-
   const timeSlotSelect = (
     <Select
       placeholder="选择时间段"
@@ -144,13 +139,22 @@ export default function AppointmentRecords() {
   )
 
   const columns = [
-    { title: '学号', dataIndex: 'studentNo', key: 'studentNo' },
-    { title: '姓名', dataIndex: 'studentName', key: 'studentName' },
-    { title: '日期', dataIndex: 'appointmentDate', key: 'appointmentDate' },
-    { title: '时段', dataIndex: 'timeSlotName', key: 'timeSlotName' },
-    { title: '地点', dataIndex: 'location', key: 'location' },
-    { title: '初访员', dataIndex: 'visitorName', key: 'visitorName' },
-    { title: '状态', dataIndex: 'status', key: 'status', render: statusTag },
+    { title: '学号', dataIndex: 'studentNo', key: 'studentNo', width: 110 },
+    { title: '姓名', dataIndex: 'studentName', key: 'studentName', width: 80 },
+    { title: '日期', dataIndex: 'appointmentDate', key: 'appointmentDate', width: 110 },
+    { title: '时段', dataIndex: 'timeSlotName', key: 'timeSlotName', width: 100 },
+    { title: '地点', dataIndex: 'location', key: 'location', width: 100, ellipsis: true },
+    { title: '初访员', dataIndex: 'visitorName', key: 'visitorName', width: 90 },
+    {
+      title: '全流程进度', key: 'progress', width: 190,
+      render: (_, r) => (
+        <AppointmentProgressCell
+          firstVisit={r.firstVisitProgress}
+          consultation={r.consultationProgress}
+          closing={r.closingProgress}
+        />
+      ),
+    },
     {
       title: '操作', key: 'action',
       render: (_, r) => (
@@ -185,6 +189,9 @@ export default function AppointmentRecords() {
 
   return (
     <div>
+      <p style={{ marginBottom: 12, color: 'rgba(255,255,255,0.55)', fontSize: 13 }}>
+        「全流程进度」分初访、咨询、结案三阶段实时展示；初访完成后若仍在咨询，咨询列会显示「咨询中」。
+      </p>
       <Space style={{ marginBottom: 16 }}>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => {
           setMode('add')
@@ -201,7 +208,7 @@ export default function AppointmentRecords() {
       </Space>
 
       <Table rowKey="id" columns={columns} dataSource={data} loading={loading}
-        scroll={{ x: 900 }} pagination={{ pageSize: 20 }} />
+        scroll={{ x: 1100 }} pagination={{ pageSize: 20 }} />
 
       <Modal
         title={mode === 'edit' ? '改约' : '新增预约'}

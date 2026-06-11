@@ -15,6 +15,7 @@ export default function LoginForm({ onSuccess }) {
       const { token, userId, username, roleCode, roleName } = res.data
       localStorage.setItem('token', token)
       localStorage.setItem('userId', userId)
+      localStorage.setItem('userNo', values.userNo)
       localStorage.setItem('username', username)
       localStorage.setItem('roleCode', roleCode)
       localStorage.setItem('roleName', roleName)
@@ -40,7 +41,7 @@ export default function LoginForm({ onSuccess }) {
           登 录
         </Button>
       </Form.Item>
-      <p className="login-modal-hint">初始密码均为 123456</p>
+      <p className="login-modal-hint">工作人员使用工号登录；学生无账号请切换到「学生注册」</p>
     </Form>
   )
 }

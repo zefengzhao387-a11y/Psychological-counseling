@@ -3,8 +3,25 @@ import { Card, Table, Button, Select, DatePicker, Modal, message, Tag, Empty, Re
 import dayjs from 'dayjs'
 import request from '../../api/request'
 
-const statusMap = { 1: '待审核', 2: '已通过', 3: '已拒绝', 4: '已撤销' }
-const statusColors = { 1: 'processing', 2: 'success', 3: 'error', 4: 'default' }
+const statusMap = { 1: '待审核', 2: '已通过', 3: '已拒绝', 4: '已撤销', 5: '已完成' }
+const statusColors = { 1: 'processing', 2: 'success', 3: 'error', 4: 'default', 5: 'default' }
+
+const renderStatus = (r) => (
+  <Tag color={statusColors[r.status]}>{r.statusDesc || statusMap[r.status] || r.status}</Tag>
+)
+
+const renderAction = (r, onCancel) => {
+  if (r.status === 1) {
+    return <Button type="link" danger onClick={() => onCancel(r.id)}>撤销</Button>
+  }
+  if (r.status === 2) {
+    return <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 12 }}>请按时赴约，初访员录入评估后自动完成</span>
+  }
+  if (r.status === 5) {
+    return <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: 12 }}>初访已结束</span>
+  }
+  return null
+}
 
 export default function StudentAppointment() {
   const [timeSlots, setTimeSlots] = useState([])
@@ -18,25 +35,9 @@ export default function StudentAppointment() {
   const [showModal, setShowModal] = useState(false)
   const [latestForm, setLatestForm] = useState(null)
   const [noForm, setNoForm] = useState(false)
+  const [noConsent, setNoConsent] = useState(false)
 
-  const fetchTimeSlots = async () => {
-    try {
-      const res = await request.get('/v1/appointment/time-config')
-      setTimeSlots(res.data || [])
-    } catch { /* ignore */ }
-  }
-
-  const fetchLatestForm = async () => {
-    try {
-      const res = await request.get('/v1/appointment/form/latest')
-      if (res.data) {
-        setLatestForm(res.data)
-        setNoForm(false)
-      } else {
-        setNoForm(true)
-      }
-    } catch { /* ignore */ }
-  }
+  const silent = { silent: true }
 
   const fetchAvailable = useCallback(async (date, slotId) => {
     if (!slotId) { setAvailable([]); return }
@@ -45,7 +46,8 @@ export default function StudentAppointment() {
       const d = date || selectedDate
       const dateStr = dayjs.isDayjs(d) ? d.format('YYYY-MM-DD') : d
       const res = await request.get('/v1/appointment/duty-schedule/available', {
-        params: { date: dateStr, timeSlotId: slotId },
+        ...silent,
+        params: { date: dateStr, timeSlotId: slotId, counselorType: 1 },
       })
       setAvailable(res.data || [])
     } catch { setAvailable([]) } finally { setLoading(false) }
@@ -53,12 +55,35 @@ export default function StudentAppointment() {
 
   const fetchMyAppointments = async () => {
     try {
-      const res = await request.get('/v1/appointment/first-visit/my')
+      const res = await request.get('/v1/appointment/first-visit/my', silent)
       setMyAppointments(res.data?.records || [])
     } catch { /* ignore */ }
   }
 
-  useEffect(() => { fetchTimeSlots(); fetchLatestForm(); fetchMyAppointments() }, [])
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([
+      request.get('/v1/appointment/time-config', silent),
+      request.get('/v1/appointment/form/latest', silent),
+      request.get('/v1/appointment/first-visit/my', silent),
+    ]).then(([slots, form, mine]) => {
+      if (cancelled) return
+      setTimeSlots(slots.data || [])
+      if (form.data) {
+        setLatestForm(form.data)
+        setNoForm(false)
+        setNoConsent(form.data.hasReadConsent !== 1)
+      } else {
+        setNoForm(true)
+      }
+      setMyAppointments(mine.data?.records || [])
+    }).catch(() => {
+      if (!cancelled) {
+        message.error('预约服务暂不可用，请确认 appointment-service (8082) 已启动')
+      }
+    })
+    return () => { cancelled = true }
+  }, [])
 
   const handleDateChange = (d) => {
     setSelectedDate(d)
@@ -75,6 +100,11 @@ export default function StudentAppointment() {
     setShowModal(true)
   }
 
+  const closeBookingModal = () => {
+    setShowModal(false)
+    setSelectedSchedule(null)
+  }
+
   const handleSubmitBooking = async () => {
     if (!latestForm?.id) {
       message.warning('请先填写首访登记表')
@@ -89,7 +119,7 @@ export default function StudentAppointment() {
         timeSlotId: selectedSlot,
       })
       message.success('预约提交成功，等待管理员审核')
-      setShowModal(false)
+      closeBookingModal()
       fetchMyAppointments()
       fetchAvailable(selectedDate, selectedSlot)
     } catch { /* ignore */ } finally {
@@ -97,7 +127,7 @@ export default function StudentAppointment() {
     }
   }
 
-  const handleCancel = async (id) => {
+  const handleRevoke = async (id) => {
     try {
       await request.put(`/v1/appointment/first-visit/cancel/${id}`)
       message.success('已撤销')
@@ -129,23 +159,22 @@ export default function StudentAppointment() {
     { title: '时段', dataIndex: 'timeSlotName', key: 'slot' },
     { title: '初访员', dataIndex: 'visitorName', key: 'visitor',
       render: (v) => v || <Tag>待分配</Tag> },
-    { title: '状态', dataIndex: 'status', key: 'status',
-      render: (v) => <Tag color={statusColors[v]}>{statusMap[v] || v}</Tag> },
+    { title: '状态', dataIndex: 'status', key: 'status', render: (_, r) => renderStatus(r) },
     { title: '提交时间', dataIndex: 'createTime', key: 'createTime' },
     {
-      title: '操作', key: 'action',
-      render: (_, r) => r.status === 1 ? (
-        <Button type="link" danger onClick={() => handleCancel(r.id)}>撤销</Button>
-      ) : null,
+      title: '操作', key: 'action', width: 220,
+      render: (_, r) => renderAction(r, handleRevoke),
     },
   ]
 
-  if (noForm) {
+  if (noForm || noConsent) {
     return (
       <Result
         status="warning"
-        title="请先填写首访登记表"
-        subTitle="您需要先完成首访登记表和知情同意书确认，才能进行初访预约。"
+        title={noForm ? '请先填写首访登记表' : '请先确认知情同意书'}
+        subTitle={noForm
+          ? '您需要先完成首访登记表和知情同意书确认，才能进行初访预约。'
+          : '请返回首访登记表页面，阅读并确认知情同意书后再预约。'}
         extra={
           <Button type="primary" onClick={() => window.location.href = '/student/form'}>
             前往填写
@@ -196,7 +225,11 @@ export default function StudentAppointment() {
 
       <Modal title="确认预约信息" open={showModal}
         onOk={handleSubmitBooking} confirmLoading={submitting}
-        onCancel={() => setShowModal(false)}>
+        onCancel={closeBookingModal}
+        destroyOnClose
+        maskClosable={!submitting}
+        closable={!submitting}
+        cancelButtonProps={{ disabled: submitting }}>
         <div style={{ color: '#666', marginBottom: 16, lineHeight: 2 }}>
           <div>登记表ID：<strong>{latestForm?.id}</strong></div>
           <div>预约日期：<strong>{selectedDate?.format('YYYY-MM-DD')}</strong></div>

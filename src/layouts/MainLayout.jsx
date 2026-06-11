@@ -26,7 +26,9 @@ import LightRays from '../components/LightRays'
 import SideRays from '../components/SideRays'
 import Particles from '../components/Particles'
 import AnimatedContent from '../components/AnimatedContent'
+import PageShell from '../components/PageShell'
 import AiAssistantWidget from '../components/AiAssistantWidget'
+import BrandLogo from '../components/BrandLogo'
 import './MainLayout.css'
 
 const { Header, Sider, Content } = Layout
@@ -41,6 +43,7 @@ const menuConfig = {
     { key: '/admin/counselor-info', icon: <TeamOutlined />, label: '老师信息维护' },
     { key: '/admin/appointment-review', icon: <AuditOutlined />, label: '初访预约审核' },
     { key: '/admin/appointment-records', icon: <FileTextOutlined />, label: '初访预约记录' },
+    { key: '/admin/extension-approval', icon: <FileAddOutlined />, label: '追加时段审批' },
     { key: '/admin/statistics', icon: <BarChartOutlined />, label: '统计分析' },
   ],
   3: [
@@ -129,6 +132,9 @@ export default function MainLayout() {
         width={220}
       >
         <div className="app-brand">
+          <div className={`app-brand-logo-wrap${collapsed ? ' app-brand-logo-wrap--collapsed' : ''}`}>
+            <BrandLogo size={collapsed ? 'sm' : 'lg'} />
+          </div>
           <span className={`app-brand-name${collapsed ? ' app-brand-name--collapsed' : ''}`}>
             {collapsed ? (
               BRAND.name
@@ -201,7 +207,9 @@ export default function MainLayout() {
 
         <Content className="app-content">
           <AnimatedContent contentKey={location.pathname}>
-            <Outlet />
+            <PageShell>
+              <Outlet />
+            </PageShell>
           </AnimatedContent>
         </Content>
       </Layout>

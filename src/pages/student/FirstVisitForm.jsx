@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, Steps, Form, Input, Select, Radio, Button, Result, message, Alert } from 'antd'
+import { Card, Steps, Form, Radio, Button, Result, message, Alert, Input } from 'antd'
 import { FileProtectOutlined, FormOutlined } from '@ant-design/icons'
 import request from '../../api/request'
 
@@ -78,6 +78,7 @@ export default function FirstVisitForm() {
   const [formId, setFormId] = useState(null)
   const [consentDone, setConsentDone] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [signature, setSignature] = useState('')
 
   const handleAnswerChange = (changedValues, allValues) => {
     let score = 0
@@ -95,14 +96,7 @@ export default function FirstVisitForm() {
       setSubmitting(true)
       const scores = questions.map(q => values[q.key] || 0)
       const payload = {
-        studentName: localStorage.getItem('username') || '',
-        studentNo: localStorage.getItem('userNo') || '',
-        gender: values.gender,
-        department: values.department,
-        phone: values.phone,
         questionnaire: JSON.stringify({ scores }),
-        totalScore,
-        isUrgent: totalScore > 60 ? 1 : 0,
       }
       const res = await request.post('/v1/appointment/form', payload)
       setFormId(res.data.id)
@@ -116,8 +110,12 @@ export default function FirstVisitForm() {
   }
 
   const handleConsent = async () => {
+    if (!signature.trim()) {
+      message.warning('请填写电子签名（您的真实姓名）')
+      return
+    }
     try {
-      await request.put(`/v1/appointment/form/${formId}/consent`)
+      await request.put(`/v1/appointment/form/${formId}/consent`, { signature: signature.trim() })
       setConsentDone(true)
       message.success('知情同意书确认成功，您可以前往初访预约页面进行预约')
     } catch {
@@ -153,25 +151,7 @@ export default function FirstVisitForm() {
             form={form}
             layout="vertical"
             onValuesChange={handleAnswerChange}
-            initialValues={{ gender: '男' }}
           >
-            <Card type="inner" title="基本信息" size="small" style={{ marginBottom: 16 }}>
-              <Form.Item name="gender" label="性别" rules={[{ required: true }]}>
-                <Select options={[
-                  { value: '男', label: '男' }, { value: '女', label: '女' },
-                ]} />
-              </Form.Item>
-              <Form.Item name="department" label="院系" rules={[{ required: true, message: '请输入院系' }]}>
-                <Input placeholder="如：计算机学院" />
-              </Form.Item>
-              <Form.Item name="phone" label="联系电话" rules={[
-                { required: true, message: '请输入联系电话' },
-                { pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号' },
-              ]}>
-                <Input placeholder="请输入11位手机号" />
-              </Form.Item>
-            </Card>
-
             <Card type="inner" title="心理健康问卷" size="small">
               {questions.map((q, idx) => (
                 <Form.Item
@@ -217,6 +197,18 @@ export default function FirstVisitForm() {
               {CONSENT_TEXT}
             </pre>
           </Card>
+
+          <div style={{ maxWidth: 360, margin: '0 auto 16px' }}>
+            <label style={{ display: 'block', marginBottom: 8, color: 'rgba(255,255,255,0.65)' }}>
+              电子签名（请填写真实姓名）
+            </label>
+            <Input
+              value={signature}
+              onChange={(e) => setSignature(e.target.value)}
+              placeholder="与注册姓名一致"
+              size="large"
+            />
+          </div>
 
           <div style={{ textAlign: 'center', marginTop: 24 }}>
             <Button type="primary" size="large" onClick={handleConsent}>

@@ -6,7 +6,22 @@ body {
   min-height: 100vh;
 }
 
-/* 弹窗、下拉层与登录页风格统一 */
+/* 弹窗入场 — 仅作用于 content，且不用 fill-mode: both，否则会挡住关闭动画 */
+.ant-modal-wrap .ant-modal-content {
+  animation: modal-pop-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+@keyframes modal-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
 .ant-modal-content {
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45) !important;
@@ -26,6 +41,21 @@ body {
 .ant-picker-dropdown .ant-picker-panel-container {
   background: rgba(20, 20, 24, 0.96) !important;
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.ant-message-notice {
+  animation: toast-slide-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes toast-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .ant-message-notice-content {
@@ -61,4 +91,49 @@ body {
   font-size: 28px;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.92);
+}
+
+/* Drawer 深色统一 */
+.ant-drawer-content {
+  background: rgba(16, 16, 20, 0.96) !important;
+}
+
+.ant-drawer-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.ant-drawer-body {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* 咨询师 — 录入表单面板 */
+.counselor-drawer-meta {
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.counselor-record-form-panel {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+}
+
+.counselor-record-form-panel h4 {
+  margin: 0 0 16px;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 500;
+}
+
+.counselor-record-content {
+  margin: 4px 0;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.counselor-record-note {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
 }

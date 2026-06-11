@@ -161,6 +161,8 @@ export default function ExcelExport() {
   const counselorColumns = [
     { title: '序号', key: 'index', width: 60, render: (_, __, i) => i + 1 },
     { title: '咨询师ID', dataIndex: 'counselorId', key: 'counselorId', width: 100 },
+    { title: '咨询师', dataIndex: 'counselorName', key: 'counselorName', width: 120,
+      render: (v, r) => v || `ID ${r.counselorId}` },
     { title: '报告总数（人次）', dataIndex: 'totalReports', key: 'totalReports', width: 140,
       sorter: (a, b) => Number(a.totalReports) - Number(b.totalReports),
       render: (v) => <Tag color="blue">{v}</Tag> },

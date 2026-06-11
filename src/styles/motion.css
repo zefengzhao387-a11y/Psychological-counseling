@@ -1,0 +1,222 @@
+/* ============================================================
+   听心 HeartListen — 全局动效与 UI 微交互
+   适配深色玻璃态主题，尊重 prefers-reduced-motion
+   ============================================================ */
+
+:root {
+  --motion-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-fast: 0.18s;
+  --motion-base: 0.32s;
+  --motion-slow: 0.48s;
+}
+
+/* ---------- 页面级入场 ---------- */
+@keyframes page-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes block-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmer-slide {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.page-shell {
+  position: relative;
+}
+
+/* 页面内主要区块依次出现 */
+.page-shell .ant-card,
+.page-shell .ant-table-wrapper,
+.page-shell .ant-tabs,
+.page-shell > .ant-alert,
+.page-shell > div > .ant-alert {
+  animation: block-fade-in var(--motion-base) var(--motion-ease-out) both;
+}
+
+.page-shell .ant-card:nth-of-type(1) { animation-delay: 0.04s; }
+.page-shell .ant-card:nth-of-type(2) { animation-delay: 0.1s; }
+.page-shell .ant-table-wrapper { animation-delay: 0.06s; }
+.page-shell .ant-tabs { animation-delay: 0.03s; }
+
+/* ---------- 卡片悬浮 ---------- */
+.page-shell .ant-card {
+  transition:
+    transform var(--motion-base) var(--motion-ease-out),
+    border-color var(--motion-base) ease,
+    box-shadow var(--motion-base) ease;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.page-shell .ant-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+.page-shell .ant-card-head {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ---------- 表格行动效 ---------- */
+.page-shell .ant-table-tbody > tr {
+  transition: background-color var(--motion-fast) ease, transform var(--motion-fast) ease;
+}
+
+.page-shell .ant-table-tbody > tr:hover > td {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.page-shell .ant-table-tbody > tr:active > td {
+  transform: scale(0.998);
+}
+
+/* ---------- 按钮微交互 ---------- */
+.app-content .ant-btn {
+  transition:
+    transform var(--motion-fast) var(--motion-ease-out),
+    box-shadow var(--motion-fast) ease,
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease !important;
+}
+
+.app-content .ant-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.app-content .ant-btn:not(:disabled):active {
+  transform: translateY(0) scale(0.97);
+}
+
+.app-content .ant-btn-primary:not(:disabled):hover {
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- 侧栏菜单 ---------- */
+.app-menu .ant-menu-item {
+  transition:
+    background-color var(--motion-base) var(--motion-ease-out),
+    color var(--motion-base) ease,
+    padding-inline var(--motion-base) var(--motion-ease-out) !important;
+  border-radius: 10px !important;
+  margin: 4px 8px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.app-menu .ant-menu-item-selected {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* ---------- Tabs ---------- */
+.page-shell .ant-tabs-tab {
+  transition: color var(--motion-fast) ease, opacity var(--motion-fast) ease;
+}
+
+.page-shell .ant-tabs-ink-bar {
+  transition: left var(--motion-base) var(--motion-ease-out),
+    width var(--motion-base) var(--motion-ease-out) !important;
+}
+
+/* ---------- 表单控件 focus ---------- */
+.app-content .ant-input,
+.app-content .ant-input-number,
+.app-content .ant-select-selector,
+.app-content .ant-picker {
+  transition:
+    border-color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) ease,
+    background-color var(--motion-fast) ease !important;
+}
+
+.app-content .ant-input:focus,
+.app-content .ant-input-focused,
+.app-content .ant-select-focused .ant-select-selector,
+.app-content .ant-picker-focused {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08) !important;
+}
+
+/* ---------- Tag 轻弹 ---------- */
+.app-content .ant-tag {
+  transition: transform var(--motion-fast) var(--motion-ease-spring), opacity var(--motion-fast) ease;
+}
+
+.app-content .ant-tag:hover {
+  transform: scale(1.04);
+}
+
+/* ---------- 空状态 ---------- */
+.page-shell .ant-empty {
+  animation: block-fade-in var(--motion-slow) var(--motion-ease-out) 0.12s both;
+}
+
+.page-shell .ant-empty-image svg {
+  opacity: 0.55;
+  transition: opacity var(--motion-base) ease, transform var(--motion-base) var(--motion-ease-out);
+}
+
+.page-shell .ant-empty:hover .ant-empty-image svg {
+  opacity: 0.75;
+  transform: scale(1.03);
+}
+
+/* ---------- 403 页 ---------- */
+.app-forbidden {
+  animation: page-rise-in var(--motion-slow) var(--motion-ease-out) both;
+}
+
+/* ---------- 内容区容器 ---------- */
+.app-content {
+  transition: box-shadow var(--motion-base) ease, border-color var(--motion-base) ease;
+}
+
+.app-content:focus-within {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ---------- 加载骨架（可选 class） ---------- */
+.ui-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer-slide 1.4s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* ---------- 无障碍：减少动效 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .page-shell .ant-card:hover,
+  .app-content .ant-btn:not(:disabled):hover {
+    transform: none;
+  }
+}

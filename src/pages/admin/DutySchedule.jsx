@@ -3,14 +3,18 @@ import { Table, Button, Modal, Form, Select, DatePicker, InputNumber, message, P
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import request from '../../api/request'
+import { useTeachers } from '../../hooks/useReferenceData'
 
 const { RangePicker } = DatePicker
+
+const typeLabel = (type) => (type === 1 ? '初访员' : '咨询师')
 
 export default function DutySchedule() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [timeSlots, setTimeSlots] = useState([])
+  const { teachers, options: teacherOptions } = useTeachers()
   const [form] = Form.useForm()
 
   const fetchData = async (date) => {
@@ -31,6 +35,13 @@ export default function DutySchedule() {
   }
 
   useEffect(() => { fetchData(); fetchTimeSlots() }, [])
+
+  const handleTeacherChange = (userId) => {
+    const teacher = teachers.find((t) => t.userId === userId)
+    if (teacher) {
+      form.setFieldsValue({ counselorType: teacher.type })
+    }
+  }
 
   const handleBatch = async () => {
     try {
@@ -87,8 +98,15 @@ export default function DutySchedule() {
 
       <Modal title="批量排班" open={open} onOk={handleBatch} onCancel={() => setOpen(false)} width={560}>
         <Form form={form} layout="vertical">
-          <Form.Item name="counselorId" label="老师ID" rules={[{ required: true }]}>
-            <Select showSearch placeholder="输入老师ID或姓名" />
+          <Form.Item name="counselorId" label="选择老师" rules={[{ required: true, message: '请选择老师' }]}>
+            <Select
+              showSearch
+              placeholder="输入 ID 或姓名搜索"
+              options={teacherOptions}
+              optionFilterProp="label"
+              onChange={handleTeacherChange}
+              notFoundContent={teachers.length === 0 ? '暂无老师数据，请先在「老师信息」中维护' : '未找到匹配老师'}
+            />
           </Form.Item>
           <Form.Item name="counselorType" label="老师类型" rules={[{ required: true }]}>
             <Select options={[{ value: 1, label: '初访员' }, { value: 2, label: '咨询师' }]} />

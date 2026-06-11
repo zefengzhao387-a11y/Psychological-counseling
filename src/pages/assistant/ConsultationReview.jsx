@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
-import { Table, Button, Modal, Form, DatePicker, Input, InputNumber, message, Tag } from 'antd'
+import { Table, Button, Modal, Form, DatePicker, Input, InputNumber, Select, message, Tag } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
 import request from '../../api/request'
+import { useTeachers, useTimeSlots } from '../../hooks/useReferenceData'
+import { renderPerson } from '../../utils/display'
 
-/**
- * 心理助理 — 咨询预约审核
- * 查看初访结果为"安排咨询"的学生，匹配咨询师空闲时间，录入咨询安排
- */
 export default function ConsultationReview() {
+  const { options: counselorOptions } = useTeachers(2)
+  const { options: timeSlotOptions } = useTimeSlots()
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
@@ -56,7 +56,11 @@ export default function ConsultationReview() {
   }
 
   const columns = [
-    { title: '学生ID', dataIndex: 'studentId', key: 'studentId' },
+    {
+      title: '学生',
+      key: 'studentName',
+      render: (_, r) => renderPerson(r.studentName, r.studentNo, r.studentId),
+    },
     { title: '初访结论', dataIndex: 'conclusion', key: 'conclusion', render: conclusionTag },
     { title: '危机等级', dataIndex: 'crisisLevel', key: 'crisisLevel',
       render: (v) => {
@@ -94,16 +98,17 @@ export default function ConsultationReview() {
 
       <Modal title="安排咨询" open={open} onOk={handleArrange}
         onCancel={() => { setOpen(false); setCurrentItem(null) }} width={480}>
-        <p>学生 ID：{currentItem?.studentId}</p>
+        <p>学生：{renderPerson(currentItem?.studentName, currentItem?.studentNo, currentItem?.studentId)}</p>
         <Form form={form} layout="vertical" style={{ marginTop: 12 }}>
-          <Form.Item name="counselorId" label="咨询师ID" rules={[{ required: true }]}>
-            <InputNumber min={1} style={{ width: '100%' }} placeholder="咨询师用户ID" />
+          <Form.Item name="counselorId" label="咨询师" extra="留空则系统自动匹配空闲咨询师">
+            <Select allowClear showSearch optionFilterProp="label" placeholder="选择咨询师或留空自动匹配"
+              options={counselorOptions} />
           </Form.Item>
           <Form.Item name="startDate" label="咨询开始日期" rules={[{ required: true }]}>
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item name="timeSlotId" label="时间段ID" rules={[{ required: true }]}>
-            <InputNumber min={1} style={{ width: '100%' }} placeholder="如：3" />
+          <Form.Item name="timeSlotId" label="时间段" rules={[{ required: true, message: '请选择时段' }]}>
+            <Select placeholder="选择时间段" options={timeSlotOptions} />
           </Form.Item>
           <Form.Item name="location" label="咨询地点" rules={[{ required: true }]}>
             <Input placeholder="如：心理中心B203" />

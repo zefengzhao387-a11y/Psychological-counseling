@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   Card, Row, Col, Button, Table, Form, Select, Input, DatePicker, message,
-  Statistic, Space, Collapse, Tag,
+  Statistic, Space, Collapse, Tag, Modal,
 } from 'antd'
 import {
   SearchOutlined, ReloadOutlined, FilterOutlined,
@@ -31,6 +31,9 @@ export default function SummaryQuery() {
   const [queryForm] = Form.useForm()
   const [searchForm] = Form.useForm()
   const [filtersExpanded, setFiltersExpanded] = useState(false)
+  const [reviewOpen, setReviewOpen] = useState(false)
+  const [reviewRecord, setReviewRecord] = useState(null)
+  const [reviewForm] = Form.useForm()
 
   /** 加载概览统计 */
   const loadSummary = async () => {
@@ -138,7 +141,27 @@ export default function SummaryQuery() {
         const colorMap = { '草稿': 'default', '已提交': 'processing', '已审核': 'success', '已驳回': 'error' }
         return v ? <Tag color={colorMap[v] || 'default'}>{v}</Tag> : '-'
       }},
+    {
+      title: '操作', key: 'action', fixed: 'right', width: 100,
+      render: (_, r) => r.status === '已提交' ? (
+        <Button type="link" size="small" onClick={() => {
+          setReviewRecord(r)
+          reviewForm.resetFields()
+          setReviewOpen(true)
+        }}>审核</Button>
+      ) : null,
+    },
   ]
+
+  const handleReview = async () => {
+    const values = await reviewForm.validateFields()
+    await request.put(`/v1/consultation/report/${reviewRecord.id}/review`, values)
+    message.success('审核完成')
+    setReviewOpen(false)
+    setReviewRecord(null)
+    loadSummary()
+    handleQuery(searchForm.getFieldsValue(), pagination.current, pagination.pageSize)
+  }
 
   return (
     <div>
@@ -323,6 +346,22 @@ export default function SummaryQuery() {
           locale={{ emptyText: '请设置筛选条件后点击查询' }}
         />
       </Card>
+
+      <Modal
+        title={`审核结案报告 — ${reviewRecord?.studentName || ''}`}
+        open={reviewOpen}
+        onOk={handleReview}
+        onCancel={() => { setReviewOpen(false); setReviewRecord(null) }}
+      >
+        <Form form={reviewForm} layout="vertical">
+          <Form.Item name="status" label="审核结果" rules={[{ required: true, message: '请选择' }]}>
+            <Select options={[{ value: '已审核', label: '通过' }, { value: '已驳回', label: '驳回' }]} />
+          </Form.Item>
+          <Form.Item name="reviewComment" label="审核意见">
+            <Input.TextArea rows={3} placeholder="选填" />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   )
 }

@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react'
-import { Table, Button, Modal, Form, Input, DatePicker, InputNumber, message, Tag } from 'antd'
+import { Table, Button, Modal, Form, Input, DatePicker, InputNumber, Select, message, Tag } from 'antd'
 import { PlusOutlined, EditOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import request from '../../api/request'
+import { useTeachers, useTimeSlots } from '../../hooks/useReferenceData'
+import { renderPerson } from '../../utils/display'
 
 /**
  * 心理助理 — 咨询安排记录管理
  * 查看/改约/新增 咨询安排
  */
 export default function ConsultationRecords() {
+  const { options: counselorOptions } = useTeachers(2)
+  const { options: timeSlotOptions } = useTimeSlots()
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState(null)
+  const [studentOptions, setStudentOptions] = useState([])
   const [form] = Form.useForm()
 
   const fetchData = async () => {
@@ -26,6 +31,25 @@ export default function ConsultationRecords() {
   }
 
   useEffect(() => { fetchData() }, [])
+
+  const searchStudents = async (keyword) => {
+    if (!keyword?.trim()) {
+      setStudentOptions([])
+      return
+    }
+    try {
+      const res = await request.get('/v1/appointment/first-visit/search-student', {
+        params: { keyword: keyword.trim() },
+        silent: true,
+      })
+      setStudentOptions((res.data || []).map((s) => ({
+        value: s.studentId,
+        label: `${s.studentName}（${s.studentNo}）`,
+      })))
+    } catch {
+      setStudentOptions([])
+    }
+  }
 
   const buildPayload = (values) => ({
     studentId: values.studentId,
@@ -72,10 +96,22 @@ export default function ConsultationRecords() {
   }
 
   const columns = [
-    { title: '学生ID', dataIndex: 'studentId', key: 'studentId' },
-    { title: '咨询师ID', dataIndex: 'counselorId', key: 'counselorId' },
+    {
+      title: '学生',
+      key: 'student',
+      render: (_, r) => renderPerson(r.studentName, r.studentNo, r.studentId),
+    },
+    {
+      title: '咨询师',
+      key: 'counselor',
+      render: (_, r) => r.counselorName || `用户${r.counselorId}`,
+    },
     { title: '开始日期', dataIndex: 'startDate', key: 'startDate' },
-    { title: '时段ID', dataIndex: 'timeSlotId', key: 'timeSlotId' },
+    {
+      title: '时间段',
+      key: 'timeSlot',
+      render: (_, r) => r.timeSlotName || '-',
+    },
     { title: '地点', dataIndex: 'location', key: 'location' },
     { title: '剩余周数', dataIndex: 'remainingWeeks', key: 'remainingWeeks' },
     { title: '状态', dataIndex: 'status', key: 'status', render: statusTag },
@@ -102,20 +138,37 @@ export default function ConsultationRecords() {
 
       <Modal title={editingId ? '改约' : '新增安排'} open={open} onOk={handleSave}
         onCancel={() => { setOpen(false); setEditingId(null) }} width={480}>
+        {editingId && (
+          <p style={{ marginBottom: 12 }}>
+            学生：{renderPerson(
+              data.find((item) => item.id === editingId)?.studentName,
+              data.find((item) => item.id === editingId)?.studentNo,
+              data.find((item) => item.id === editingId)?.studentId,
+            )}
+          </p>
+        )}
         <Form form={form} layout="vertical" initialValues={{ occupiedWeeks: 8 }}>
           {!editingId && (
-            <Form.Item name="studentId" label="学生ID" rules={[{ required: true }]}>
-              <InputNumber min={1} style={{ width: '100%' }} placeholder="学生用户ID" />
+            <Form.Item name="studentId" label="学生" rules={[{ required: true, message: '请选择学生' }]}>
+              <Select
+                showSearch
+                placeholder="输入姓名或学号搜索"
+                filterOption={false}
+                onSearch={searchStudents}
+                options={studentOptions}
+                notFoundContent="输入关键字搜索学生"
+              />
             </Form.Item>
           )}
-          <Form.Item name="counselorId" label="咨询师ID" rules={[{ required: true }]}>
-            <InputNumber min={1} style={{ width: '100%' }} placeholder="咨询师用户ID" />
+          <Form.Item name="counselorId" label="咨询师" rules={[{ required: true, message: '请选择咨询师' }]}>
+            <Select showSearch optionFilterProp="label" placeholder="选择咨询师"
+              options={counselorOptions} />
           </Form.Item>
           <Form.Item name="startDate" label="开始日期" rules={[{ required: true }]}>
             <DatePicker style={{ width: '100%' }} />
           </Form.Item>
-          <Form.Item name="timeSlotId" label="时间段ID" rules={[{ required: true }]}>
-            <InputNumber min={1} style={{ width: '100%' }} />
+          <Form.Item name="timeSlotId" label="时间段" rules={[{ required: true, message: '请选择时段' }]}>
+            <Select placeholder="选择时间段" options={timeSlotOptions} />
           </Form.Item>
           <Form.Item name="location" label="地点" rules={[{ required: true }]}>
             <Input placeholder="如：心理中心B203" />

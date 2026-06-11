@@ -155,7 +155,7 @@ export default function CounselorRecords() {
         onClose={() => { setDrawerOpen(false); setCurrentApp(null) }}
         width={600}>
         {currentApp && (
-          <div style={{ marginBottom: 24 }}>
+          <div className="counselor-drawer-meta">
             <p>学生ID：{currentApp.studentId}　开始日期：{currentApp.startDate}　地点：{currentApp.location}</p>
             <p>剩余周数：{currentApp.remainingWeeks}/{currentApp.occupiedWeeks || 8}
               {currentApp.status === 2 && <Tag color="green" style={{ marginLeft: 8 }}>已结案</Tag>}
@@ -166,7 +166,7 @@ export default function CounselorRecords() {
 
         {/* 录入新记录 */}
         {currentApp && currentApp.status === 1 && (
-          <div style={{ border: '1px solid #d9d9d9', borderRadius: 8, padding: 16, marginBottom: 24, background: '#fafafa' }}>
+          <div className="counselor-record-form-panel">
             <h4><PlusOutlined /> 录入本次咨询</h4>
             <Form form={form} layout="vertical" onFinish={handleSubmit}>
               <Form.Item name="appointmentId" hidden><Input /></Form.Item>
@@ -213,8 +213,8 @@ export default function CounselorRecords() {
             children: (
               <div>
                 <p><strong>第{r.sessionNumber}次</strong> — {r.consultDate} — {statusTag(r.status)}</p>
-                {r.content && <p style={{ color: '#666' }}>{r.content}</p>}
-                {r.counselorNote && <p style={{ color: '#999', fontSize: 13 }}>备注：{r.counselorNote}</p>}
+                {r.content && <p className="counselor-record-content">{r.content}</p>}
+                {r.counselorNote && <p className="counselor-record-note">备注：{r.counselorNote}</p>}
               </div>
             ),
           }))} />

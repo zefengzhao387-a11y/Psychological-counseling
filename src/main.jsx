@@ -7,6 +7,7 @@ import App from './App'
 import { appTheme } from './styles/app-theme'
 import './styles/global.css'
 import './styles/app-overrides.css'
+import './styles/motion.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

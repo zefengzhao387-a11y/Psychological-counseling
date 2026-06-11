@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { Table, Button, Modal, Select, Input, message, Tag, Tabs } from 'antd'
-import { EyeOutlined, CheckOutlined, CloseOutlined, ArrowUpOutlined } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined, ArrowUpOutlined } from '@ant-design/icons'
 import request from '../../api/request'
+import { useTeachers } from '../../hooks/useReferenceData'
+import AppointmentProgressCell from '../../components/AppointmentProgressCell'
 
 export default function AppointmentReview() {
+  const { options: visitorOptions } = useTeachers(1)
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
@@ -57,8 +60,8 @@ export default function AppointmentReview() {
   }
 
   const statusTag = (s) => {
-    const map = { 1: '待审核', 2: '已通过', 3: '已拒绝', 4: '已撤销' }
-    const color = { 1: 'orange', 2: 'green', 3: 'red', 4: 'default' }
+    const map = { 1: '待审核', 2: '已通过', 3: '已拒绝', 4: '已撤销', 5: '初访已完成' }
+    const color = { 1: 'orange', 2: 'green', 3: 'red', 4: 'default', 5: 'blue' }
     return <Tag color={color[s]}>{map[s] || s}</Tag>
   }
 
@@ -77,7 +80,17 @@ export default function AppointmentReview() {
       render: (v) => v === 1 ? <Tag color="volcano">优先</Tag> : null,
     },
     { title: '初访员', dataIndex: 'visitorName', key: 'visitorName', width: 80 },
-    { title: '状态', dataIndex: 'status', key: 'status', width: 80, render: statusTag },
+    {
+      title: '全流程进度', key: 'progress', width: 190,
+      render: (_, r) => (
+        <AppointmentProgressCell
+          firstVisit={r.firstVisitProgress}
+          consultation={r.consultationProgress}
+          closing={r.closingProgress}
+        />
+      ),
+    },
+    { title: '状态', dataIndex: 'status', key: 'status', width: 90, render: statusTag },
     {
       title: '操作', key: 'action', fixed: 'right', width: 220,
       render: (_, record) => (
@@ -85,7 +98,12 @@ export default function AppointmentReview() {
           {record.status === 1 && (
             <>
               <Button type="link" size="small" icon={<CheckOutlined />}
-                onClick={() => { setCurrentApp(record); setReviewOpen(true) }}>审核</Button>
+                onClick={() => {
+                  setCurrentApp(record)
+                  setVisitorId(record.visitorId || null)
+                  setLocation(record.location || '')
+                  setReviewOpen(true)
+                }}>审核</Button>
               <Button type="link" size="small" danger icon={<CloseOutlined />}
                 onClick={() => handleReject(record.id)}>拒绝</Button>
               <Button type="link" size="small" icon={<ArrowUpOutlined />}
@@ -120,9 +138,10 @@ export default function AppointmentReview() {
           {currentApp?.isUrgent === 1 && <Tag color="red" style={{ marginLeft: 8 }}>紧急报警</Tag>}
         </p>
         <div style={{ marginTop: 16 }}>
-          <label>分配初访员ID：</label>
-          <Select style={{ width: '100%' }} placeholder="输入初访员ID"
-            onChange={setVisitorId} value={visitorId} showSearch />
+          <label>分配初访员：</label>
+          <Select style={{ width: '100%' }} placeholder="选择初访员"
+            options={visitorOptions}
+            onChange={setVisitorId} value={visitorId} showSearch optionFilterProp="label" />
         </div>
         <div style={{ marginTop: 12 }}>
           <label>咨询地点：</label>

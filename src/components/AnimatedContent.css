@@ -1,14 +1,48 @@
 .animated-content {
-  animation: animated-content-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
 }
 
-@keyframes animated-content-in {
+.animated-content--up {
+  animation: page-route-in 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animated-content--right {
+  animation: slide-in-right 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animated-content--left {
+  animation: slide-in-left 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes page-route-in {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }

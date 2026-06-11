@@ -14,6 +14,9 @@ export const appTheme = {
     colorTextTertiary: 'rgba(255, 255, 255, 0.32)',
     borderRadius: 12,
     borderRadiusLG: 16,
+    motionDurationMid: '0.22s',
+    motionDurationSlow: '0.32s',
+    motionEaseInOut: 'cubic-bezier(0.22, 1, 0.36, 1)',
     fontFamily:
       "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
   },
@@ -57,6 +60,11 @@ export const appTheme = {
     },
     DatePicker: {
       colorBgContainer: 'rgba(255, 255, 255, 0.05)',
+    },
+    Drawer: {
+      colorBgElevated: 'rgba(16, 16, 20, 0.96)',
+      footerPaddingBlock: 16,
+      footerPaddingInline: 24,
     },
   },
 }

@@ -8,6 +8,7 @@ import TimeConfig from '../pages/admin/TimeConfig'
 import CounselorInfo from '../pages/admin/CounselorInfo'
 import AppointmentReview from '../pages/admin/AppointmentReview'
 import AppointmentRecords from '../pages/admin/AppointmentRecords'
+import ExtensionApproval from '../pages/admin/ExtensionApproval'
 import Statistics from '../pages/admin/Statistics'
 
 // 学生（占位）
@@ -84,6 +85,10 @@ const routes = [
       {
         path: 'admin/appointment-records',
         element: <RoleGuard roles={[5]}><AppointmentRecords /></RoleGuard>,
+      },
+      {
+        path: 'admin/extension-approval',
+        element: <RoleGuard roles={[5]}><ExtensionApproval /></RoleGuard>,
       },
       {
         path: 'admin/statistics',

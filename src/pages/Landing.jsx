@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { message } from 'antd'
-import { HeartOutlined } from '@ant-design/icons'
 import Particles from '../components/Particles'
+import BrandLogo from '../components/BrandLogo'
 import SideRays from '../components/SideRays'
 import TextType from '../components/TextType'
 import StarBorder from '../components/StarBorder'
@@ -66,10 +66,10 @@ export default function Landing() {
 
       <header className="landing-header">
         <span className="landing-header-icon">
-          <HeartOutlined />
+          <BrandLogo size="md" />
         </span>
         <button type="button" className="landing-header-login" onClick={() => setLoginOpen(true)}>
-          登录
+          登录 / 注册
         </button>
       </header>
 
