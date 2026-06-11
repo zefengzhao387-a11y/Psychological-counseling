@@ -18,6 +18,7 @@ import {
   UserOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  HeartOutlined,
 } from '@ant-design/icons'
 import { BRAND } from '../constants/brand'
 import BlurText from '../components/BlurText'
@@ -54,6 +55,7 @@ const menuConfig = {
     { key: '/student/form', icon: <FormOutlined />, label: '首访登记表' },
     { key: '/student/appointment', icon: <CalendarOutlined />, label: '初访预约' },
     { key: '/student/my-records', icon: <HistoryOutlined />, label: '我的预约' },
+    { key: '/student/healing', icon: <HeartOutlined />, label: '心语碎片' },
   ],
   2: [
     { key: '/visitor/manage', icon: <EditOutlined />, label: '初访管理' },

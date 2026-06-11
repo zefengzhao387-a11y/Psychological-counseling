@@ -15,6 +15,7 @@ import Statistics from '../pages/admin/Statistics'
 import FirstVisitForm from '../pages/student/FirstVisitForm'
 import StudentAppointment from '../pages/student/Appointment'
 import MyRecords from '../pages/student/MyRecords'
+import HealingFragments from '../pages/student/HealingFragments'
 
 // 初访员（占位）
 import FirstVisitManage from '../pages/visitor/FirstVisitManage'
@@ -99,6 +100,7 @@ const routes = [
       { path: 'student/form', element: <RoleGuard roles={[1]}><FirstVisitForm /></RoleGuard> },
       { path: 'student/appointment', element: <RoleGuard roles={[1]}><StudentAppointment /></RoleGuard> },
       { path: 'student/my-records', element: <RoleGuard roles={[1]}><MyRecords /></RoleGuard> },
+      { path: 'student/healing', element: <RoleGuard roles={[1]}><HealingFragments /></RoleGuard> },
 
       // ---- 初访员（roleCode=2）----
       { path: 'visitor/manage', element: <RoleGuard roles={[2]}><FirstVisitManage /></RoleGuard> },
